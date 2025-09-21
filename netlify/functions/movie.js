@@ -1,18 +1,20 @@
-import fetch from 'node-fetch'
-
 const TMDB_BASE = 'https://api.themoviedb.org/3'
 
-export async function handler(event) {
+exports.handler = async function (event) {
   const apiKey = process.env.TMDB_API_KEY
   const v4Token = process.env.TMDB_V4_TOKEN
   if (!apiKey && !v4Token) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Kredensial TMDB belum dikonfigurasi (TMDB_API_KEY atau TMDB_V4_TOKEN)' }),
+      body: JSON.stringify({ error: 'Kredensial TMDB belum dikonfigurasi (TMDB_API_KEY atau TMDB_V4_TOKEN) di Netlify Environment Variables.' }),
     }
   }
 
-  const id = event.queryStringParameters?.id
+  let id = event.queryStringParameters?.id
+  if (!id && event.path) {
+    const m = event.path.match(/\/movie\/(\d+)/)
+    if (m && m[1]) id = m[1]
+  }
   const language = event.queryStringParameters?.language || 'en-US'
   if (!id) return { statusCode: 400, body: JSON.stringify({ error: 'Param `id` wajib' }) }
 

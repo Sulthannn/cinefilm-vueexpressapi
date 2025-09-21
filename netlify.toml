@@ -12,5 +12,5 @@
 
 [[redirects]]
   from = "/api/movie/:id"
-  to = "/.netlify/functions/movie?id=:id"
+  to = "/.netlify/functions/movie/:id"
   status = 200
