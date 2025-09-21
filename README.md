@@ -1,62 +1,64 @@
 # Filmdex
 
-A small Vue 3 + Tailwind demo that lists action movies from TMDB, with search suggestions and a detail view.
+A Vue 3 + Tailwind app that lists action movies from TMDB, with search suggestions, infinite scroll, and a detail view. Frontend is built with Vite; API key is hidden behind a backend (Express proxy for local dev or Netlify Functions in production).
 
-## Structure
+## Struktur
 
-- `filmdex.html` — Main HTML page, loads Tailwind CDN and the app module
-- `assets/app.js` — Vue 3 app (ES module), fetches data and handles UI state
-- `assets/styles.css` — Minimal custom styles (e.g., `.suggested`)
-- `assets/wb.png` — Logo image used in the header
+- `filmdex-vite/` — Frontend (Vite + Vue + Tailwind)
+- `server.js` — Express proxy untuk pengembangan lokal (`/api/...` → TMDB)
+- `netlify/` + `netlify.toml` — Netlify Functions dan redirect `/api` untuk production
+- `.env.example` — Contoh env untuk TMDB
 
-## Cara menjalankan (dengan Proxy Backend)
+Legacy file (single-file HTML + assets) sudah dihapus agar repo lebih bersih.
 
-1) Install dependency:
+## Menjalankan di lokal (dev)
+
+1) Install dependency untuk backend proxy (root) dan frontend (Vite):
 
 ```bash
+# root (backend proxy)
 npm install
-```
 
-2) Salin `.env.example` menjadi `.env` dan isi `TMDB_API_KEY`:
-
-```bash
-cp .env.example .env
-# edit .env dan isi TMDB_API_KEY
-```
-
-3) Jalankan server:
-
-```bash
-npm start
-# Buka http://localhost:5500/filmdex.html
-```
-
-Frontend akan memanggil endpoint proxy `/api/...` sehingga API key tidak ada di browser.
-
-## Catatan
-
-- Vue di-load sebagai ES module dari CDN (unpkg) di `assets/app.js`.
-- API key disembunyikan di server (Express) melalui variabel lingkungan `.env`.
-- Struktur dipisah: logic di `assets/app.js`, style di `assets/styles.css`.
-
-## Opsi migrasi ke Vite + SFC (lanjutan)
-
-Jika proyek makin besar, gunakan Vite dan Single File Components (`.vue`) untuk pengembangan yang lebih nyaman (HMR, bundling, code-splitting). Langkah ringkas:
-
-1) Inisiasi proyek Vite (vanilla Vue):
-
-```bash
-npm create vite@latest filmdex-vite -- --template vue
+# frontend
 cd filmdex-vite
 npm install
 ```
 
-2) Pindahkan komponen ke `.vue` dan logic dari `assets/app.js` ke `src/App.vue`/`src/main.js`.
-
-3) Konfigurasi proxy dev Vite (opsional) di `vite.config.js` supaya request `/api` diarahkan ke server Express atau langsung ke TMDB dengan injeksi key via server dev.
-
-4) Jalankan Vite:
+2) Isi kredensial TMDB di `.env` (root):
 
 ```bash
+cp .env.example .env
+# Buka .env dan isi salah satu:
+# TMDB_API_KEY=...   # v3 API Key
+# atau
+# TMDB_V4_TOKEN=...  # v4 Bearer Token
+```
+
+3) Jalankan dua terminal terpisah:
+
+```bash
+# Terminal 1: Express proxy (port 5500)
+npm start
+
+# Terminal 2: Vite dev server (port 5173)
+cd filmdex-vite
 npm run dev
 ```
+
+Vite sudah mem-proxy request `/api` ke `http://localhost:5500` (lihat `vite.config.js`).
+
+## Deploy ke Netlify (tanpa Express)
+
+- Pastikan environment variable TMDB diset di Netlify (Site settings → Environment → `TMDB_API_KEY` atau `TMDB_V4_TOKEN`).
+- Netlify akan membuild `filmdex-vite` dan fungsi di `netlify/functions/*` akan menangani `/api` (lihat `netlify.toml`).
+- Frontend cukup memanggil path `/api/...` (tanpa mengungkap API key di browser).
+
+## Catatan
+
+- Aset logo untuk Vite berada di `filmdex-vite/public/wb.png`.
+- Untuk produksi, Express tidak diperlukan—gunakan Netlify Functions.
+
+## Troubleshooting
+
+- 401/500 dari `/api`: cek env TMDB di lokal/Netlify.
+- Proxy error (ECONNREFUSED) saat dev: pastikan Express di port 5500 sedang berjalan sebelum membuka Vite.

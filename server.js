@@ -54,5 +54,5 @@ app.get('/api/movie/:id', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Filmdex server berjalan di http://localhost:${PORT}/filmdex.html`);
+  console.log(`CinLi API proxy berjalan di http://localhost:${PORT} (endpoints di /api/*)`);
 });

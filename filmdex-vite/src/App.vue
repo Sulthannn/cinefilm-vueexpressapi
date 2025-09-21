@@ -1,25 +1,43 @@
 <template>
-  <div>
-    <header class="relative">
-      <div class="absolute inset-0 z-0">
-        <img src="https://wallpapers.com/images/hd/zoom-background-q4y9fpc46ij6h8a2.jpg" alt="Background" class="w-full h-full object-cover object-center" />
+  <div class="min-h-screen">
+    <header class="relative isolate">
+      <div class="absolute inset-0 -z-10">
+        <img
+          src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1974&auto=format&fit=crop"
+          alt="Cinematic background"
+          class="w-full h-full object-cover object-center"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/60 to-slate-900"></div>
       </div>
-      <nav class="container mx-auto px-4 py-4 flex justify-between items-center z-10 relative">
-        <h1 class="text-3xl font-bold hover:font-black text-white">Filmdex</h1>
+
+      <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="/wb.png" alt="Logo" class="w-8 h-8 drop-shadow" />
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">CinLi</h1>
+        </div>
+        <span class="text-xs sm:text-sm text-slate-300/80">by TMDB</span>
       </nav>
-      <div class="container mx-auto flex justify-center items-center z-10 relative">
-        <img src="/wb.png" alt="Warner Bros Logo" class="w-64 h-64 mb-6" />
+
+      <div class="container mx-auto px-4 py-10 sm:py-14">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight text-white">
+            Find the best movies to watch tonight
+          </h2>
+          <p class="mt-3 text-slate-300 max-w-prose">
+            Explore the list of popular action movies, search for your favorite titles, and view their detailed information.
+          </p>
+        </div>
+
+        <div class="mt-6">
+          <SearchBar v-model="search" :suggested="suggestedFilm" @select="goToDetail" />
+        </div>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
-      <h1 class="container mx-auto text-3xl font-black text-center text-yellow-300 mb-6 z-10">List Film</h1>
-
-      <SearchBar v-model="search" :suggested="suggestedFilm" @select="goToDetail" />
-
+    <main class="container mx-auto px-4 py-10">
       <section>
         <div v-if="!viewAsList">
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 dark:bg-gray-700">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6">
             <SkeletonCard v-if="isFetching && !movieList.length" v-for="n in 10" :key="'skel-'+n" />
             <MovieCard
               v-for="item in movieList"
@@ -28,12 +46,12 @@
               @click="goToDetail(item.id)"
             />
           </div>
-          <div class="flex justify-center my-6" v-if="isFetching">
+          <div class="flex justify-center items-center gap-3 my-8" v-if="isFetching">
             <div class="h-6 w-6 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-            <span class="text-yellow-300 ml-3">Memuat...</span>
+            <span class="text-yellow-300">Loading...</span>
           </div>
           <div ref="sentinel" class="h-8"></div>
-          <div v-if="!hasMore && movieList.length" class="text-center text-gray-400 my-4">Sudah semua.</div>
+          <div v-if="!hasMore && movieList.length" class="text-center text-slate-400 my-6">Done.</div>
         </div>
         <div v-else>
           <MovieDetail :movie="selectedMovie" @back="viewAsList = false" />

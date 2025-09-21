@@ -1,9 +1,9 @@
 <template>
-  <div class="bg-gray-800 rounded-lg overflow-hidden shadow-md animate-pulse">
-    <div class="w-full h-64 bg-gray-700"></div>
+  <div class="rounded-xl overflow-hidden bg-slate-800/60 ring-1 ring-white/10 shadow animate-pulse">
+    <div class="w-full aspect-[2/3] bg-slate-700"></div>
     <div class="p-4 space-y-2">
-      <div class="h-6 bg-gray-700 w-3/4"></div>
-      <div class="h-4 bg-gray-700 w-1/2"></div>
+      <div class="h-5 bg-slate-700 w-3/4 rounded"></div>
+      <div class="h-4 bg-slate-700 w-1/2 rounded"></div>
     </div>
   </div>
 </template>
