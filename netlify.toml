@@ -1,0 +1,16 @@
+[build]
+  command = "npm --prefix filmdex-vite ci && npm --prefix filmdex-vite run build"
+  publish = "filmdex-vite/dist"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/discover/movie"
+  to = "/.netlify/functions/discover"
+  status = 200
+
+[[redirects]]
+  from = "/api/movie/:id"
+  to = "/.netlify/functions/movie?id=:id"
+  status = 200
